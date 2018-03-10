@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+	<style>
+	*{
+		margin: 0;
+		padding: 0;
+	}
+	#canvas{
+		background: #000;
+		display: block;
+	}
+	</style>
+<body>
+	<canvas id="canvas" width="100%" height="100%"></canvas>
+	<script type="text/javascript">
+	var canvas=document.getElementById('canvas');
+	var w=canvas.width=window.innerWidth;
+	var h=canvas.height=window.innerHeight;
+	var cxt=canvas.getContext("2d");
+
+	var num=500;
+	var data=[];
+	for(var i=0;i<num;i++){
+		data[i]={}; 
+		data[i].x=Math.random()*w;//随机x坐标
+		data[i].y=Math.random()*h;//随机y坐标
+		data[i].cx=Math.random()*4-2;
+		data[i].cy=Math.random()*4-2;
+		Circle(data[i].x,data[i].y);
+	}
+	
+	(function draw(){
+		cxt.clearRect(0,0,w,h);
+		for(var i=0;i<num;i++){
+			data[i].x=data[i].x+data[i].cx;
+			data[i].y=data[i].y+data[i].cy;
+			if(data[i].x>w||data[i].x<0)data[i].cx=-data[i].cx;
+			if(data[i].y>h||data[i].y<0)data[i].cy=-data[i].cy;
+			Circle(data[i].x,data[i].y);
+			for(var j=i+1;j<num;j++){
+				if((data[i].x-data[j].x)*(data[i].x-data[j].x)+(data[i].y-data[j].y)*(data[i].y-data[j].y)<=50*50){
+					line(data[i].x , data[i].y , data[j].x , data[j].y);
+					
+				}
+			}
+		}
+		window.requestAnimationFrame(draw);
+	})();
+	function Circle(x,y){//画圆
+		cxt.fillStyle=cnn();
+		cxt.beginPath();//开始路径
+		cxt.arc(x,y,1,0,Math.PI*2,true);
+		cxt.closePath();//结束路径
+		cxt.fill();
+	}
+	function line(x1,y1,x2,y2){//划线
+		cxt.strokeStyle=cnn();
+		cxt.moveTo(x1,y1);
+		cxt.lineTo(x2,y2);
+		cxt.stroke();
+	}
+	function cnn(){//  产生随即颜色
+		var str="";
+		for(var j=0;j<6;j++){
+				var ttab=Math.round(Math.random()*15).toString(16);
+				str=str+ttab;	
+			}
+			var _str="#"+str;
+			return _str;
+	}
+
+	</script>
+</body>
+</html>
